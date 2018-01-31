@@ -8,10 +8,10 @@ A Imagepicker which allows to select images or capture from camera with permissi
 
 **Features**
 
-Easy to Implement.
-No permissions required.
-Allow Crop
-Compress image
+Easy to Implement. <br>
+No permissions required.  <br>
+Allow Crop <br>
+Compress image <br>
 
 ## Using
 

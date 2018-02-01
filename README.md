@@ -59,3 +59,12 @@ Add repository url and dependency in application module gradle file:
       lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);<br>
     }<br>
   }<br>
+  
+  **4. Open Camera picker using** <br>
+
+ filePickUtils.requestImageCamera(CAMERA_PERMISSION, true, true); // pass false if you dont want to allow image crope
+
+  **5. Open gallery picker using** <br>
+  
+filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, true, true);
+ 

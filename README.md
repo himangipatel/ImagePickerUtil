@@ -51,27 +51,32 @@ Add repository url and dependency in application module gradle file:
   
 **3. Call below lines on onRequestPermissionsResult and onActivityResult**<br>
   
-  @Override<br>
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {<br>
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);<br>
-    if (lifeCycleCallBackManager != null) {<br>
-      lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);<br>
-    }<br>
-  }<br>
+  ```java
+   @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (lifeCycleCallBackManager != null) {
+      lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+  }
 
-  @Override<br>
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {<br>
-    super.onActivityResult(requestCode, resultCode, data);<br>
-    if (lifeCycleCallBackManager != null) {<br>
-      lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);<br>
-    }<br>
-  }<br>
-  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (lifeCycleCallBackManager != null) {
+      lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);
+    }
+  }
+ ```
+ 
   **4. Open Camera picker using** <br>
 
- filePickUtils.requestImageCamera(CAMERA_PERMISSION, true, true); // pass false if you dont want to allow image crope
-
+```java
+  filePickUtils.requestImageCamera(CAMERA_PERMISSION, true, true); // pass false if you dont want to allow image crope
+ ```
   **5. Open gallery picker using** <br>
-  
-filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, true, true);
+  ```java
+ filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, true, true);
+ ```
+
  

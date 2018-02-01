@@ -29,18 +29,25 @@ Add repository url and dependency in application module gradle file:
 	}
 
 ## Usage
-**1. Start by creating an instance of FilePickUtils and LifeCycleCallBackManager.**<br>
 
- FilePickUtils filePickUtils = new FilePickUtils(this, onFileChoose);;<br>
- LifeCycleCallBackManager lifeCycleCallBackManager = filePickUtils.getCallBackManager();<br>
+**1. Start by creating an instance of FilePickUtils and LifeCycleCallBackManager.**
+
+```java
+  FilePickUtils filePickUtils = new FilePickUtils(this, onFileChoose);;
+ LifeCycleCallBackManager lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+ ```
+
 
 **2. Callback listener**<br>
 
- private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {<br>
-    @Override public void onFileChoose(String fileUri, int requestCode) {<br>
+```java
+  private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
+    @Override public void onFileChoose(String fileUri, int requestCode) {
      // here you will get captured or selected image<br>
-    }<br>
-  };<br>
+    }
+  };
+  
+  ```
   
 **3. Call below lines on onRequestPermissionsResult and onActivityResult**<br>
   

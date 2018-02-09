@@ -13,6 +13,7 @@ import java.io.IOException;
  */
 
 public class AppUtils {
+
   static File getWorkingDirectory() {
     File directory =
         new File(Environment.getExternalStorageDirectory(), BuildConfig.APPLICATION_ID);

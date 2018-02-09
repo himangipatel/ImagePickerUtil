@@ -60,7 +60,6 @@ public class FilePickUtils implements LifeCycleCallBackManager {
   private List<String> fileUrls = new ArrayList<>();
   private boolean isFixedRatio;
 
-
   public FilePickUtils(Activity activity, OnFileChoose mOnFileChoose) {
     super();
     this.activity = activity;
@@ -119,7 +118,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
 
     FileUri fileUri = null;
     if (activity != null) {
-      fileUri = AppUtils.createImageFile(activity.getBaseContext(), "CAMERA");
+      fileUri = AppUtils.createImageFile(activity, "CAMERA");
     }
     if (fileUri == null) {
       return;
@@ -434,7 +433,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     }
 
     FileOutputStream out = null;
-    String filename = AppUtils.createImageFile(activity.getBaseContext(), "").getFile().getAbsolutePath();
+    String filename = AppUtils.createImageFile(activity, "").getFile().getAbsolutePath();
     try {
       out = new FileOutputStream(filename);
 
@@ -457,7 +456,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
       if (index > 0) {
         return cursor.getString(index);
       }
-      return AppUtils.getWorkingDirectory() + "/" + cursor.getString(0);
+      return AppUtils.getWorkingDirectory(activity) + "/" + cursor.getString(0);
     }
   }
 
@@ -486,7 +485,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
   }
 
   private void performCrop(Uri uri) {
-    FileUri cropFile = AppUtils.createImageFile(activity.getBaseContext(), "CROP");
+    FileUri cropFile = AppUtils.createImageFile(activity, "CROP");
     if (fragment != null) {
       CropImage.activity(uri).setOutputUri(cropFile.getImageUrl())
           .setGuidelines(CropImageView.Guidelines.ON)

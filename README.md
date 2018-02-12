@@ -84,7 +84,7 @@ Add repository url and dependency in application module gradle file:
  ```java
  <provider
         android:name="android.support.v4.content.FileProvider"
-        android:authorities="com.medeasypatient"
+        android:authorities="add your package name"
         android:exported="false"
         android:grantUriPermissions="true">
       <meta-data

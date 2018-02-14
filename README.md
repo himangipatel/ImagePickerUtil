@@ -75,11 +75,11 @@ Add repository url and dependency in application module gradle file:
   filePickUtils.requestImageCamera(CAMERA_PERMISSION, true, true); // pass false if you dont want to allow image crope
  ```
   **5. Open gallery picker using** <br>
-  ```java
- filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, true, true);
+
+ ```java
+  filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, true, true);
  ```
- 
- **6. Add below code to your manifest <br>
+ **6. Add below code to your manifest** <br>
  
  ```java
  <provider

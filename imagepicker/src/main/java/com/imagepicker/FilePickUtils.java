@@ -278,7 +278,8 @@ public class FilePickUtils implements LifeCycleCallBackManager {
                             builder.create().show();
                         } else
                             activity.shouldShowRequestPermissionRationale(permission);
-                    } else if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission)) {
+                    } else if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission)
+                            || Manifest.permission.READ_EXTERNAL_STORAGE.equals(permission)) {
                         if (!showRationale) {
                             showAlertDialog("Without storage permission the app is unable to open gallery or to save photos. Are you sure want to deny this permission?");
                         } else

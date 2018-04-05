@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.imagepicker.FilePickUtils;
 import com.imagepicker.LifeCycleCallBackManager;
+
 import java.io.File;
 
 import static com.imagepicker.FilePickUtils.CAMERA_PERMISSION;
@@ -22,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
   private FilePickUtils filePickUtils;
   private BottomDialog bottomDialog;
   private LifeCycleCallBackManager lifeCycleCallBackManager;
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,4 @@ public class MainActivity extends AppCompatActivity {
       lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);
     }
   }
-
-
 }

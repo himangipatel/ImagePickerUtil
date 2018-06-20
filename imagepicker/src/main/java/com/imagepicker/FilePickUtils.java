@@ -38,7 +38,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -61,6 +60,8 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     private Fragment fragment;
     private boolean allowCrop;
     private boolean allowDelete;
+    private float MAX_HEIGHT = 616.0f;
+    private float MAX_WIDTH = 816.0f;
 
     private List<String> fileUrls = new ArrayList<>();
     private boolean isFixedRatio;
@@ -116,6 +117,15 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         } else {
             requestPermissionForCameraButStorage();
         }
+    }
+
+
+    public void setMaxHeight(float maxHeight) {
+        MAX_HEIGHT = maxHeight;
+    }
+
+    public void setMaxWidth(float maxWidth) {
+        MAX_WIDTH = maxWidth;
     }
 
     public void selectImageFromCamera() {
@@ -326,7 +336,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
                     if (allowCrop) {
                         performCrop(data.getData());
                     } else {
-            /*onFileChoose(data.getData().toString());*/
+                        /*onFileChoose(data.getData().toString());*/
                         performImageProcessing(data.getData().toString(),
                                 FileType.IMG_FILE);
                     }
@@ -336,7 +346,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
                     if (allowCrop) {
                         performCrop(uri);
                     } else {
-            /*onFileChoose(uri.getPath());*/
+                        /*onFileChoose(uri.getPath());*/
 
                         performImageProcessing(uri.toString(),
                                 FileType.IMG_FILE);
@@ -375,13 +385,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     //This method is for compress image
     private void performImageProcessing(final String imageUrl,
                                         final FileType mFileType) {
-        Observable
-                .defer(new Func0<Observable<String>>() {
-                    @Override
-                    public Observable<String> call() {
-                        return Observable.just(compressImage(imageUrl));
-                    }
-                })
+        Observable.just(compressImage(imageUrl))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
@@ -423,8 +427,8 @@ public class FilePickUtils implements LifeCycleCallBackManager {
 
         //		max Height and width values of the compressed image is taken as 816x612
 
-        float maxHeight = 616.0f;
-        float maxWidth = 816.0f;
+        float maxHeight = MAX_HEIGHT;
+        float maxWidth = MAX_WIDTH;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
 
@@ -511,6 +515,9 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        File file = new File(filePath);
+        file.delete();
 
         return filename;
     }

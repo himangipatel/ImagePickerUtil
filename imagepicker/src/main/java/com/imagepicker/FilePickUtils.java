@@ -38,6 +38,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -384,9 +385,13 @@ public class FilePickUtils implements LifeCycleCallBackManager {
 
     //This method is for compress image
     private void performImageProcessing(final String imageUrl,
-                                        final FileType mFileType) {
-        Observable.just(compressImage(imageUrl))
-                .subscribeOn(Schedulers.io())
+                                        final FileType type) {
+        Observable.defer(new Func0<Observable<String>>() {
+            @Override
+            public Observable<String> call() {
+                return Observable.just(compressImage(imageUrl));
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
@@ -431,6 +436,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         float maxWidth = MAX_WIDTH;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
+
 
         //		width and height values are set maintaining the aspect ratio of the image
         Log.d("IMAGE", "actualHeight=" + actualHeight + "actualWidth=" + actualWidth + "");
@@ -516,8 +522,8 @@ public class FilePickUtils implements LifeCycleCallBackManager {
             e.printStackTrace();
         }
 
-        File file = new File(filePath);
-        file.delete();
+//        File file = new File(filePath);
+//        file.delete();
 
         return filename;
     }

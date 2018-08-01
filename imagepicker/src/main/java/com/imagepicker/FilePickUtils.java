@@ -170,7 +170,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void requestPermissionForExternalStorage() {
-        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        final String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         requestPermissionWithRationale(permissions, STORAGE_PERMISSION_IMAGE, "Storage");
     }
 

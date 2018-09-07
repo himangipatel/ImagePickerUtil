@@ -3,6 +3,7 @@ package com.imagepicker;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -24,6 +25,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -60,6 +62,8 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     private Activity activity;
     private Fragment fragment;
     private boolean allowCrop;
+    private boolean multipleImageSelected;
+    private int size = 0;
     private boolean allowDelete;
     private float MAX_HEIGHT = 616.0f;
     private float MAX_WIDTH = 816.0f;
@@ -96,9 +100,30 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         }
     }
 
+    public void requestImageGallery(int requestCode, boolean allowCrop, boolean isFixedRatio, boolean multipleImageSelected) {
+        this.requestCode = requestCode;
+        this.allowCrop = allowCrop;
+        this.isFixedRatio = isFixedRatio;
+        this.multipleImageSelected = multipleImageSelected;
+        boolean hasStoragePermission = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasStoragePermission) {
+            selectImageFromGallery();
+        } else {
+            requestPermissionForExternalStorage();
+        }
+    }
+
     public void selectImageFromGallery() {
         Intent pictureActionIntent =
                 new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        if (multipleImageSelected && !allowCrop) {
+            pictureActionIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        } else if (multipleImageSelected && allowCrop) {
+            Toast.makeText(activity, "Multi image selection is not supported in crop mode", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         startActivityForResult(pictureActionIntent, GALLERY_PICTURE);
     }
 
@@ -335,16 +360,43 @@ public class FilePickUtils implements LifeCycleCallBackManager {
             switch (requestCode) {
                 case GALLERY_PICTURE:
                     if (allowCrop) {
+                        size = 1;
                         performCrop(data.getData());
                     } else {
                         /*onFileChoose(data.getData().toString());*/
-                        performImageProcessing(data.getData().toString(),
-                                FileType.IMG_FILE);
+
+                        if (multipleImageSelected) {
+                            if (data.getClipData() != null) {
+                                ClipData mClipData = data.getClipData();
+                                ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                                size = mClipData.getItemCount();
+                                for (int i = 0; i < mClipData.getItemCount(); i++) {
+
+                                    ClipData.Item item = mClipData.getItemAt(i);
+                                    Uri uri1 = item.getUri();
+                                    mArrayUri.add(uri1);
+
+                                    performImageProcessing(uri1.toString(), FileType.IMG_FILE);
+
+                                }
+
+                                Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
+                            }
+
+                        } else {
+                            if (data.getData() != null) {
+                                size = 1;
+                                performImageProcessing(data.getData().toString(), FileType.IMG_FILE);
+                            }
+                        }
+
+
                     }
                     break;
                 case CAMERA_PICTURE:
                     uri = imageUrl;
                     if (allowCrop) {
+                        size = 1;
                         performCrop(uri);
                     } else {
                         /*onFileChoose(uri.getPath());*/
@@ -354,6 +406,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
                     }
                     break;
                 case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                    size = 1;
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     Uri resultUri = result.getUri();
                     performImageProcessing(resultUri.toString(),
@@ -563,7 +616,8 @@ public class FilePickUtils implements LifeCycleCallBackManager {
 
     private void onFileChoose(String uri) {
         if (mOnFileChoose != null) {
-            mOnFileChoose.onFileChoose(uri, requestCode);
+            mOnFileChoose.onFileChoose(uri, requestCode, size);
+
         }
     }
 
@@ -587,6 +641,6 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     }
 
     public interface OnFileChoose {
-        void onFileChoose(String fileUri, int requestCode);
+        void onFileChoose(String fileUri, int requestCode, int size);
     }
 }

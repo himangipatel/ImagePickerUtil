@@ -1,3 +1,7 @@
 <resources>
   <string name="app_name">FilePicker</string>
+  <string name="vw_rationale_storage">Need Reading Storage Permission for Picking Files</string>
+  <string name="vw_up_to_max">Already up to max</string>
+  <string name="vw_confirm">Done</string>
+  <string name="vw_all">All</string>
 </resources>

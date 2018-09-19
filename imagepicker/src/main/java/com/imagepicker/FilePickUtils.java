@@ -27,6 +27,9 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.imagepicker.pdfpicker.Constant;
+import com.imagepicker.pdfpicker.NormalFile;
+import com.imagepicker.pdfpicker.NormalFilePickActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -53,6 +56,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     private static final int GALLERY_PICTURE = 11;
     public static final int STORAGE_PERMISSION_IMAGE = 111;
     private static final int STORAGE_PERMISSION_CAMERA = 112;
+    public static final int STORAGE_PERMISSION_FILE = 113;
     public static final int CAMERA_PERMISSION = 115;
     private static final int CAMERA_BUT_STORAGE_PERMISSION = 116;
     private static final int SETTING_SCREEN_FOR_PERMISSION = 117;
@@ -67,6 +71,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
     private boolean allowDelete;
     private float MAX_HEIGHT = 616.0f;
     private float MAX_WIDTH = 816.0f;
+    private String[] suffix;
 
     private List<String> fileUrls = new ArrayList<>();
     private boolean isFixedRatio;
@@ -100,6 +105,14 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         }
     }
 
+    public void openFilePicker(int maxSelection, String[] suffix) {
+        Intent intent4 = new Intent(activity, NormalFilePickActivity.class);
+        intent4.putExtra(Constant.MAX_NUMBER, maxSelection);
+//        intent4.putExtra(IS_NEED_FOLDER_LIST, true);
+        intent4.putExtra(NormalFilePickActivity.SUFFIX,/*new String[]{"pdf"}*/suffix);
+        startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
+    }
+
     public void requestImageGallery(int requestCode, boolean allowCrop, boolean isFixedRatio, boolean multipleImageSelected) {
         this.requestCode = requestCode;
         this.allowCrop = allowCrop;
@@ -110,6 +123,18 @@ public class FilePickUtils implements LifeCycleCallBackManager {
             selectImageFromGallery();
         } else {
             requestPermissionForExternalStorage();
+        }
+    }
+
+    public void requestFilePicker(int requestCode, int maxSelection, String[] suffix) {
+        this.requestCode = requestCode;
+        boolean hasStoragePermission = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        this.size = maxSelection;
+        this.suffix = suffix;
+        if (hasStoragePermission) {
+            openFilePicker(maxSelection, suffix);
+        } else {
+            requestPermissionForFilePicker();
         }
     }
 
@@ -206,6 +231,12 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         requestPermissionWithRationale(permissions, STORAGE_PERMISSION_CAMERA, "Camera & Storage");
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    private void requestPermissionForFilePicker() {
+        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        requestPermissionWithRationale(permissions, STORAGE_PERMISSION_FILE, "FilePicker");
+    }
+
     //Activity and Fragment Base Methods
     private void startActivityForResult(Intent intent, int requestCode) {
         if (fragment != null) {
@@ -230,7 +261,7 @@ public class FilePickUtils implements LifeCycleCallBackManager {
                 showRationale = true;
             }
         }
-
+        requestPermissions(permissions, requestCode);
         if (showRationale) {
             AlertDialog.Builder builder =
                     new AlertDialog.Builder(activity).setPositiveButton("AGREE",
@@ -283,6 +314,9 @@ public class FilePickUtils implements LifeCycleCallBackManager {
         } else if (requestCode == CAMERA_BUT_STORAGE_PERMISSION
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectImageFromCamera();
+        } else if (requestCode == STORAGE_PERMISSION_FILE
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openFilePicker(size, suffix);
         } else {
             for (int i = 0, len = permissions.length; i < len; i++) {
                 String permission = permissions[i];
@@ -411,6 +445,12 @@ public class FilePickUtils implements LifeCycleCallBackManager {
                     Uri resultUri = result.getUri();
                     performImageProcessing(resultUri.toString(),
                             FileType.IMG_FILE);
+                    break;
+                case Constant.REQUEST_CODE_PICK_FILE:
+                    ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                    for (NormalFile file : list) {
+                        onFileChoose(file.getPath());
+                    }
                     break;
             }
         }

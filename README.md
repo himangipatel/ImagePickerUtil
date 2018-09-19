@@ -25,7 +25,7 @@ Add repository url and dependency in application module gradle file:
 	}
   
   	dependencies {
-	        compile 'com.github.himangipatel:ImagePickerUtil:0.1.8'
+	        compile 'com.github.himangipatel:ImagePickerUtil:0.1.9'
 	}
 
 ## Usage
@@ -42,7 +42,7 @@ Add repository url and dependency in application module gradle file:
 
 ```java
   private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
-    @Override public void onFileChoose(String fileUri, int requestCode) {
+    @Override public void onFileChoose(String fileUri, int requestCode, int size) {
      // here you will get captured or selected image<br>
     }
   };
@@ -79,6 +79,12 @@ Add repository url and dependency in application module gradle file:
  ```java
   filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, true, true);
  ```
+
+ ```java
+ // if you want to pick multiple images from gallery call below method.(Multi image picker id not supported with crop functionality)
+  filePickUtils.requestImageGallery(STORAGE_PERMISSION_IMAGE, false, false,true);
+ ```
+ 
  **6. Add below code to your manifest** <br>
  
  ```java

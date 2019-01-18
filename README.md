@@ -25,7 +25,7 @@ Add repository url and dependency in application module gradle file:
 	}
   
   	dependencies {
-	        compile 'com.github.himangipatel:ImagePickerUtil:0.1.9'
+	        compile 'com.github.himangipatel:ImagePickerUtil:v2.1'
 	}
 
 ## Usage
